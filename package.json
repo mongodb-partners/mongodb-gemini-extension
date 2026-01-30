@@ -25,7 +25,7 @@
     "mongodb-connection-string-url": "^3.0.2",
     "mongodb-log-writer": "^2.4.1",
     "mongodb-redact": "^1.2.0",
-    "mongodb-schema": "^12.6.2",
+    "mongodb-schema": "^12.6.3",
     "node-fetch": "^3.3.2",
     "node-machine-id": "1.1.12",
     "oauth4webapi": "^3.8.0",
