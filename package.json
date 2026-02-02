@@ -20,7 +20,7 @@
     "@vitest/eslint-plugin": "^1.3.4",
     "bson": "^6.10.4",
     "express": "^5.1.0",
-    "lru-cache": "^11.1.0",
+    "lru-cache": "^11.2.5",
     "mongodb": "^6.19.0",
     "mongodb-connection-string-url": "^3.0.2",
     "mongodb-log-writer": "^2.4.1",
