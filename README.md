@@ -25,7 +25,7 @@ Pass the URI directly for non-interactive use:
 ### Install from GitHub
 
 ```bash
-gemini extensions install https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git
+gemini extensions install https://github.com/mongodb-partners/mongodb-gemini-extension.git
 ```
 
 ### Manual installation
