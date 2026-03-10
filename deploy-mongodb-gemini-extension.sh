@@ -23,7 +23,7 @@ set -e
 # Constants
 # ============================================================================
 
-GITHUB_REPO="https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git"
+GITHUB_REPO="https://github.com/mongodb-partners/mongodb-gemini-extension.git"
 EXTENSIONS_DIR="$HOME/.gemini/extensions"
 TARGET_DIR="$HOME/.gemini/extensions/mongodb"
 BACKUPS_DIR="$HOME/.gemini/backups"
