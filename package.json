@@ -1,57 +1,39 @@
 {
   "name": "mongodb-gemini-extension",
-  "version": "1.0.0",
-  "description": "A Gemini CLI extension for the MongoDB MCP Server.",
+  "version": "2.0.0",
+  "description": "A Gemini CLI extension for MongoDB — thin wrapper around the official mongodb-mcp-server npm package, providing all MongoDB database and Atlas operations through the Gemini CLI.",
   "type": "module",
-  "main": "src/index.js",
   "scripts": {
     "start": "node run.js",
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p tsconfig.esm.json",
-    "build:cjs": "tsc -p tsconfig.cjs.json"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.4",
-    "@mongodb-js/device-id": "^0.3.1",
-    "@mongodb-js/devtools-connect": "^3.9.3",
-    "@mongodb-js/devtools-proxy-support": "^0.5.2",
-    "@mongosh/arg-parser": "^3.14.0",
-    "@mongosh/service-provider-node-driver": "~3.17.1",
-    "@vitest/eslint-plugin": "^1.3.4",
-    "bson": "^6.10.4",
-    "express": "^5.1.0",
-    "lru-cache": "^11.1.0",
-    "mongodb": "^6.19.0",
-    "mongodb-connection-string-url": "^3.0.2",
-    "mongodb-log-writer": "^2.4.1",
-    "mongodb-redact": "^1.2.0",
-    "mongodb-schema": "^12.6.2",
-    "node-fetch": "^3.3.2",
-    "node-machine-id": "1.1.12",
-    "oauth4webapi": "^3.8.0",
-    "openapi-fetch": "^0.14.0",
-    "ts-levenshtein": "^1.0.7",
-    "yargs-parser": "^21.1.1",
-    "zod": "^3.25.76"
+    "mongodb-mcp-server": "^1.8.0"
   },
-  "optionalDependencies": {
-    "kerberos": "^2.2.2"
+  "devDependencies": {
+    "vitest": "^3.1.1"
   },
   "engines": {
-    "node": "^20.19.0 || ^22.12.0 || >= 23.0.0"
+    "node": "^20.19.0 || ^22.12.0 || >=23.0.0"
   },
   "keywords": [
     "gemini",
-    "cli",
+    "gemini-cli",
     "extension",
     "mcp",
-    "mongodb"
+    "mcp-server",
+    "mongodb",
+    "mongodb-atlas"
   ],
+  "author": "MongoDB",
   "license": "Apache-2.0",
-  "devDependencies": {
-    "@types/express": "^5.0.5",
-    "@types/node": "^24.10.1",
-    "@types/yargs-parser": "^21.0.3",
-    "typescript": "^5.9.3"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git"
+  },
+  "homepage": "https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension",
+  "bugs": {
+    "url": "https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension/issues"
   }
 }
