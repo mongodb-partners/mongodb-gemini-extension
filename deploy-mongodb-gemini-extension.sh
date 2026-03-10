@@ -237,6 +237,7 @@ if [ "$IS_LOCAL_REPO" = "true" ]; then
       cp -R "$SCRIPT_DIR/$f" "$TARGET_DIR/" || die "Failed to copy $f"
     fi
   done
+  cp -R "$SCRIPT_DIR/skills" "$TARGET_DIR/skills" || die "Failed to copy"
 
   success "Copied extension files from local repo"
 else
@@ -260,7 +261,6 @@ else
   npm install --no-audit --no-fund 2>&1 || die "npm install failed. Check the output above for details."
   success "Dependencies installed (npm install)"
 fi
-
 # ============================================================================
 # Step 6: Configure mongo.config.json
 # ============================================================================
