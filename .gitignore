@@ -1,42 +1,17 @@
-dist
-node_modules
-.vscode/mcp.json
-.github/prompts/*
-
-# Environment variables
-.env
-
-# Sensitive
-state.json
-
-tests/tmp
-coverage
-# Generated assets by accuracy runs
-.accuracy
-
-
 # Dependencies
-/node_modules
+node_modules/
 
-# Local configuration
+# Local configuration (contains credentials)
 mongo.config.json
 
 # Logs
-logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
+logs/
 
 # OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Compiled output
-/dist
+# IDE
+.vscode/
+.idea/

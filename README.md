@@ -1,219 +1,192 @@
 # MongoDB Gemini CLI Extension
 
-A Gemini CLI extension for the MongoDB MCP Server, enabling MongoDB database and Atlas operations directly through the Gemini CLI.
+A Gemini CLI extension that provides MongoDB database and Atlas operations through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/).
 
-## 📚 Table of Contents
-- [🚀 Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-- [🛠️ Supported Tools](#supported-tools)
-- [📄 Supported Resources](#supported-resources)
-- [⚙️ Advanced Configuration](#advanced-configuration)
-- [🔧 Development](#development)
-- [🤝 Contributing](#contributing)
+This extension wraps the official [`mongodb-mcp-server`](https://github.com/mongodb-js/mongodb-mcp-server) npm package, providing seamless installation for Gemini CLI users with automatic upstream updates.
 
-## 🚀 Getting Started
+## Installation
 
-### Prerequisites
-
-- **Node.js** - Version requirements:
-  - At least 20.19.0
-  - When using v22 then at least v22.12.0
-  - Otherwise any version 23+
-  
-  ```shell
-  node -v
-  ```
-
-- **Gemini CLI** - Ensure you have the Gemini CLI installed and configured
-- **MongoDB Connection String** or **Atlas API Credentials** - Required for the extension to connect to your MongoDB instance
-
-### Installation
-
-#### Option 1: Install from GitHub (Recommended)
+### Deploy script (recommended)
 
 ```bash
-gemini extensions install https://github.com/mongodb-partners/mdb-gemini-cli-ext.git
+git clone https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git
+cd mongodb-gemini-extension
+./deploy-mongodb-gemini-extension.sh
 ```
 
-#### Option 2: Manual Local Installation
+The script checks prerequisites, installs the extension to `~/.gemini/extensions/mongodb/`, and prompts for your MongoDB connection string.
 
-1. Clone the repository:
+Pass the URI directly for non-interactive use:
+
 ```bash
-git clone https://github.com/mongodb-partners/mdb-gemini-cli-ext.git
-cd mdb-gemini-cli-ext
+./deploy-mongodb-gemini-extension.sh --uri "mongodb+srv://user:pass@cluster.mongodb.net/mydb"
 ```
 
-2. Build the extension:
+### Install from GitHub
+
 ```bash
+gemini extensions install https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git
+```
+
+### Manual installation
+
+```bash
+git clone https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git
+cd mongodb-gemini-extension
 npm install
-npm run build
-```
-
-3. Copy to Gemini extensions directory:
-```bash
 mkdir -p ~/.gemini/extensions
-cp -R . ~/.gemini/extensions/mongodb-gemini-extension
+cp -R . ~/.gemini/extensions/mongodb
 ```
 
-### Configuration
+## Quick start
 
-After installation, you need to configure your MongoDB connection:
+1. Copy the configuration template:
 
-1. Navigate to the extension directory:
+   ```bash
+   cd ~/.gemini/extensions/mongodb
+   cp mongo.config.json.example mongo.config.json
+   ```
+
+2. Add your MongoDB connection string to `mongo.config.json`:
+
+   ```json
+   {
+     "MONGODB_URI": "mongodb+srv://user:pass@cluster.mongodb.net/mydb"
+   }
+   ```
+
+3. Restart the Gemini CLI and verify:
+
+   ```
+   /mcp
+   /tools
+   ```
+
+   The MongoDB server and its tools appear in the output.
+
+> **Security:** `mongo.config.json` contains credentials and is excluded from version control via `.gitignore`. Do not commit this file.
+
+## Features
+
+- **MongoDB CRUD** — find, aggregate, insert, update, delete operations on collections
+- **Schema and index management** — create/drop indexes, infer collection schemas, view stats
+- **Atlas cluster management** — list orgs/projects, create clusters, manage users and access lists
+- **Atlas Search** — create and list Atlas Search indexes
+- **Local deployments** — create local Atlas deployments via Docker
+- **Data export** — export query results to EJSON
+- **Read-only mode** — restrict the extension to read operations
+- **Automatic updates** — weekly CI checks for new `mongodb-mcp-server` releases
+
+## Tools
+
+All tools come from the upstream [MongoDB MCP Server](https://github.com/mongodb-js/mongodb-mcp-server). The available set depends on the installed version.
+
+### Database tools
+
+| Tool | Description |
+|------|-------------|
+| `find` | Run a find query against a collection |
+| `aggregate` | Run an aggregation pipeline |
+| `count` | Count documents in a collection |
+| `insert-one` | Insert a single document |
+| `insert-many` | Insert multiple documents |
+| `update-one` | Update a single document |
+| `update-many` | Update multiple documents |
+| `delete-one` | Delete a single document |
+| `delete-many` | Delete multiple documents |
+| `create-index` | Create an index on a collection |
+| `drop-index` | Drop an index from a collection |
+| `rename-collection` | Rename a collection |
+| `drop-collection` | Drop a collection |
+| `drop-database` | Drop a database |
+| `list-databases` | List all databases |
+| `list-collections` | List collections in a database |
+| `collection-indexes` | List indexes on a collection |
+| `collection-schema` | Infer the schema of a collection |
+| `collection-storage-size` | Get collection size in MB |
+| `db-stats` | Get database statistics |
+| `export` | Export query results to EJSON |
+| `explain` | Explain a query execution plan |
+
+### Atlas tools
+
+Requires `MDB_MCP_API_CLIENT_ID` and `MDB_MCP_API_CLIENT_SECRET` in your configuration. See the [configuration reference](docs/configuration.md).
+
+| Tool | Description |
+|------|-------------|
+| `atlas-list-orgs` | List Atlas organizations |
+| `atlas-list-projects` | List Atlas projects |
+| `atlas-create-project` | Create an Atlas project |
+| `atlas-list-clusters` | List Atlas clusters |
+| `atlas-inspect-cluster` | Inspect a specific cluster |
+| `atlas-create-free-cluster` | Create a free-tier cluster |
+| `atlas-connect-cluster` | Connect to an Atlas cluster |
+| `atlas-inspect-access-list` | Inspect IP/CIDR access list |
+| `atlas-create-access-list` | Add IP/CIDR to access list |
+| `atlas-list-db-users` | List database users |
+| `atlas-create-db-user` | Create a database user |
+| `atlas-list-alerts` | List project alerts |
+
+### Local deployment tools
+
+| Tool | Description |
+|------|-------------|
+| `atlas-local-create-deployment` | Create a local Atlas deployment via Docker |
+
+### Search index tools
+
+| Tool | Description |
+|------|-------------|
+| `create-search-index` | Create an Atlas Search index |
+| `list-search-indexes` | List search indexes on a collection |
+
+Run `/tools` in Gemini CLI to see the tools available with your installed version.
+
+## Resources
+
+| Resource | Description |
+|----------|-------------|
+| `config` | Server configuration (sensitive values redacted) |
+| `debug` | Debugging info for connectivity issues |
+| `exported-data` | Data exported via the `export` tool |
+
+## Updating
+
+### Automatic
+
+A GitHub Actions workflow (`.github/workflows/sync-upstream.yml`) runs weekly. When a new `mongodb-mcp-server` version is published, it creates a pull request with the updated dependency.
+
+### Manual
+
 ```bash
-cd ~/.gemini/extensions/mongodb-gemini-extension
+cd ~/.gemini/extensions/mongodb
+npm install mongodb-mcp-server@latest
 ```
 
-2. Create the configuration file from the template:
+Check the installed version:
+
 ```bash
-cp mongo.config.json.example mongo.config.json
+npm list mongodb-mcp-server
 ```
 
-3. Edit `mongo.config.json` with your MongoDB connection string:
-```json
-{
-  "MONGODB_URI": "mongodb+srv://username:password@cluster.mongodb.net/myDatabase?retryWrites=true&w=majority"
-}
-```
+Restart the Gemini CLI after updating.
 
-> **🔒 Security Note:** The `mongo.config.json` file contains sensitive credentials. It is automatically excluded from version control via `.gitignore`.
+## Documentation
 
-4. Restart the Gemini CLI to load the extension
+- [Configuration reference](docs/configuration.md) — all config options and examples
+- [Architecture](docs/architecture.md) — how the extension works and why
+- [Developer guide](docs/developer-guide.md) — setup, testing, and contributing
+- [Troubleshooting](docs/troubleshooting.md) — common errors and fixes
 
-5. Verify the installation:
-```
-/mcp
-/tools
-```
+## License
 
-You should see the mongodb server listed as active and its tools available.
+Apache-2.0 — see [LICENSE](LICENSE).
 
-## 🛠️ Supported Tools
+## Links
 
-### MongoDB Database Tools
-- `find` - Run a find query against a MongoDB collection
-- `aggregate` - Run an aggregation against a MongoDB collection
-- `count` - Get the number of documents in a MongoDB collection
-- `insert-one` - Insert a single document into a MongoDB collection
-- `insert-many` - Insert multiple documents into a MongoDB collection
-- `create-index` - Create an index for a MongoDB collection
-- `update-one` - Update a single document in a MongoDB collection
-- `update-many` - Update multiple documents in a MongoDB collection
-- `rename-collection` - Rename a MongoDB collection
-- `delete-one` - Delete a single document from a MongoDB collection
-- `delete-many` - Delete multiple documents from a MongoDB collection
-- `drop-collection` - Remove a collection from a MongoDB database
-- `drop-database` - Remove a MongoDB database
-- `list-databases` - List all databases for a MongoDB connection
-- `list-collections` - List all collections for a given database
-- `collection-indexes` - Describe the indexes for a collection
-- `collection-schema` - Describe the schema for a collection
-- `collection-storage-size` - Get the size of a collection in MB
-- `db-stats` - Return statistics about a MongoDB database
-- `export` - Export query or aggregation results to EJSON format
-
-### MongoDB Atlas Tools (when configured with Atlas API credentials)
-- `atlas-list-orgs` - Lists MongoDB Atlas organizations
-- `atlas-list-projects` - Lists MongoDB Atlas projects
-- `atlas-create-project` - Creates a new MongoDB Atlas project
-- `atlas-list-clusters` - Lists MongoDB Atlas clusters
-- `atlas-inspect-cluster` - Inspect a specific MongoDB Atlas cluster
-- `atlas-create-free-cluster` - Create a free MongoDB Atlas cluster
-- `atlas-connect-cluster` - Connects to MongoDB Atlas cluster
-- `atlas-inspect-access-list` - Inspect IP/CIDR ranges with access
-- `atlas-create-access-list` - Configure IP/CIDR access list
-- `atlas-list-db-users` - List MongoDB Atlas database users
-- `atlas-create-db-user` - Creates a MongoDB Atlas database user
-- `atlas-list-alerts` - List MongoDB Atlas Alerts for a Project
-
-## 📄 Supported Resources
-
-- `config` - Server configuration with sensitive parameters redacted
-- `debug` - Debugging information for MongoDB connectivity issues
-- `exported-data` - Access to data exported using the export tool
-
-## ⚙️ Advanced Configuration
-
-The extension supports additional configuration options through the `mongo.config.json` file:
-
-```json
-{
-  "MONGODB_URI": "mongodb+srv://...",
-  "MDB_MCP_READ_ONLY": "true",
-  "MDB_MCP_INDEX_CHECK": "true",
-  "MDB_MCP_MAX_DOCUMENTS_PER_QUERY": "100",
-  "MDB_MCP_MAX_BYTES_PER_QUERY": "16777216",
-  "MDB_MCP_DISABLED_TOOLS": "drop-database,drop-collection",
-  "MDB_MCP_API_CLIENT_ID": "your-atlas-client-id",
-  "MDB_MCP_API_CLIENT_SECRET": "your-atlas-client-secret"
-}
-```
-
-### Configuration Options
-
-- **MONGODB_URI** - MongoDB connection string (required)
-- **MDB_MCP_READ_ONLY** - Enable read-only mode (prevents write operations)
-- **MDB_MCP_INDEX_CHECK** - Enforce that queries must use an index
-- **MDB_MCP_MAX_DOCUMENTS_PER_QUERY** - Maximum documents returned per query
-- **MDB_MCP_MAX_BYTES_PER_QUERY** - Maximum size in bytes for query results
-- **MDB_MCP_DISABLED_TOOLS** - Comma-separated list of tools to disable
-- **MDB_MCP_API_CLIENT_ID** - Atlas API client ID (for Atlas tools)
-- **MDB_MCP_API_CLIENT_SECRET** - Atlas API client secret (for Atlas tools)
-
-## 🔧 Development
-
-### Building from Source
-
-1. Clone and set up the development environment:
-```bash
-git clone https://github.com/mongodb-partners/mdb-gemini-cli-ext.git
-cd mdb-gemini-cli-ext
-npm install
-```
-
-2. Build the extension:
-```bash
-npm run build
-```
-
-3. Test locally:
-```bash
-npm start
-```
-
-### Project Structure
-
-```
-mdb-gemini-cli-ext/
-├── dist/               # Compiled JavaScript output
-├── src/                # Original TypeScript source
-├── gemini-extension.json # Gemini extension manifest
-├── run.js              # Extension entry point
-├── mongo.config.json.example # Configuration template
-└── package.json        # Node.js package configuration
-```
-
-## 🤝 Contributing
-
-This extension is based on the original [MongoDB MCP Server](https://github.com/mongodb-js/mongodb-mcp-server). Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-For major changes, please open an issue first to discuss what you would like to change.
-
-## 📝 License
-
-Apache-2.0 License - See the original [MongoDB MCP Server](https://github.com/mongodb-js/mongodb-mcp-server) for licensing details.
-
-## 🔗 Links
-
-- [GitHub Repository](https://github.com/mongodb-partners/mdb-gemini-cli-ext)
-- [Original MongoDB MCP Server](https://github.com/mongodb-js/mongodb-mcp-server)
-- [Gemini CLI Documentation](https://github.com/google-gemini/gemini-cli)
-- [MongoDB Documentation](https://docs.mongodb.com/)
+- [MongoDB MCP Server (upstream)](https://github.com/mongodb-js/mongodb-mcp-server)
+- [MongoDB MCP Server on npm](https://www.npmjs.com/package/mongodb-mcp-server)
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+- [MongoDB documentation](https://docs.mongodb.com/)
 - [MongoDB Atlas](https://www.mongodb.com/atlas)
+- [Model Context Protocol](https://modelcontextprotocol.io/)

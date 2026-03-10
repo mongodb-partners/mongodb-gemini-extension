@@ -1,0 +1,95 @@
+name: Sync Upstream mongodb-mcp-server
+
+on:
+  schedule:
+    # Run weekly on Mondays at 09:00 UTC
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force update even if versions match"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check for new upstream version
+        id: version-check
+        run: |
+          # Get the latest published version of mongodb-mcp-server
+          LATEST=$(npm view mongodb-mcp-server version)
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+
+          # Get the currently pinned version from package.json
+          CURRENT=$(node -e "
+            const pkg = JSON.parse(require('fs').readFileSync('package.json','utf8'));
+            const range = pkg.dependencies['mongodb-mcp-server'] || '';
+            // Strip semver range prefix (^, ~, >=, etc.)
+            const ver = range.replace(/^[\^~>=<]+/, '');
+            console.log(ver);
+          ")
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+
+          FORCE="${{ inputs.force || 'false' }}"
+          if [ "$LATEST" != "$CURRENT" ] || [ "$FORCE" = "true" ]; then
+            echo "needs_update=true" >> "$GITHUB_OUTPUT"
+            echo "Upstream update available: $CURRENT -> $LATEST"
+          else
+            echo "needs_update=false" >> "$GITHUB_OUTPUT"
+            echo "Already up to date at $CURRENT"
+          fi
+
+      - name: Update dependency
+        if: steps.version-check.outputs.needs_update == 'true'
+        run: |
+          npm install mongodb-mcp-server@latest --save
+          # Verify it installs cleanly
+          npm ci
+
+      - name: Run tests
+        if: steps.version-check.outputs.needs_update == 'true'
+        run: npm test
+
+      - name: Create Pull Request
+        if: steps.version-check.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore(deps): bump mongodb-mcp-server from ${{ steps.version-check.outputs.current }} to ${{ steps.version-check.outputs.latest }}
+          title: |
+            chore(deps): bump mongodb-mcp-server to v${{ steps.version-check.outputs.latest }}
+          body: |
+            ## Automated Upstream Sync
+
+            Updates `mongodb-mcp-server` from `${{ steps.version-check.outputs.current }}` to `${{ steps.version-check.outputs.latest }}`.
+
+            ### What changed upstream
+            See the [mongodb-mcp-server releases](https://github.com/mongodb-js/mongodb-mcp-server/releases) for details.
+
+            ### Checks
+            - [x] `npm ci` installs successfully
+            - [x] `npm test` passes
+
+            ---
+            *This PR was created automatically by the [sync-upstream workflow](.github/workflows/sync-upstream.yml).*
+          branch: chore/bump-mcp-server-${{ steps.version-check.outputs.latest }}
+          labels: dependencies,automated
+          delete-branch: true
