@@ -9,7 +9,7 @@ This extension wraps the official [`mongodb-mcp-server`](https://github.com/mong
 ### Deploy script (recommended)
 
 ```bash
-git clone https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git
+git clone https://github.com/mongodb-partners/mongodb-gemini-extension.git
 cd mongodb-gemini-extension
 ./deploy-mongodb-gemini-extension.sh
 ```
@@ -31,7 +31,7 @@ gemini extensions install https://github.com/mongodb-partners/mongodb-gemini-ext
 ### Manual installation
 
 ```bash
-git clone https://github.com/mohammaddaoudfarooqi/mongodb-gemini-extension.git
+git clone https://github.com/mongodb-partners/mongodb-gemini-extension.git
 cd mongodb-gemini-extension
 npm install
 mkdir -p ~/.gemini/extensions
