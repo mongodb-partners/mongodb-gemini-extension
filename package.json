@@ -1,7 +1,7 @@
 {
   "name": "mongodb-gemini-extension",
   "version": "2.0.0",
-  "description": "A Gemini CLI extension for MongoDB — thin wrapper around the official mongodb-mcp-server npm package, providing all MongoDB database and Atlas operations through the Gemini CLI.",
+  "description": "An Official Gemini CLI extension for MongoDB — thin wrapper around the official mongodb-mcp-server npm package, providing all MongoDB database and Atlas operations through the Gemini CLI.",
   "type": "module",
   "scripts": {
     "start": "node run.js",
